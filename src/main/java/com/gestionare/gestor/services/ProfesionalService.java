@@ -8,30 +8,27 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.gestionare.gestor.models.SesionModel;
-import com.gestionare.gestor.repository.ISesionRepository;
+import com.gestionare.gestor.models.ProfesionalModel;
+import com.gestionare.gestor.repository.IProfesionalRepository;
 
 @Service
 @Primary
-public class SesionService {
+public class ProfesionalService {
 
 	@Autowired
-	private ISesionRepository repositorio;
-
-	public List<SesionModel> getAll() {
+	private IProfesionalRepository repositorio;
+	
+	public List<ProfesionalModel> getAll() {
 		return this.repositorio.findAll(Sort.by("id").descending());
 	}
-
-	public SesionModel findById(String id) {
-		Optional<SesionModel> optional = this.repositorio.findById(id);
+	public ProfesionalModel findById(String id) {
+		Optional<ProfesionalModel> optional = this.repositorio.findById(id);
 		if (optional.isPresent()) {
 			return optional.get();
 		}
 		return null;
 	}
-
-	public void save(SesionModel modelo) {
+	public void save(ProfesionalModel modelo) {
 		this.repositorio.save(modelo);
 	}
-
 }

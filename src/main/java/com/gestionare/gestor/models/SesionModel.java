@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.Data;
 
 @Data
-@Document(value="sesion")
+@Document(value = "sesion")
 public class SesionModel {
 	@Id
 	private String id;
@@ -19,9 +19,25 @@ public class SesionModel {
 	private String tratamiento;
 	private Float precio;
 	private Float descuento;
+
 	
 //	Relaciones
 	@DBRef
-	private PacienteModel pacienteId;
+	private PacienteModel pacienteId ;
+	@DBRef
+	private ProfesionalModel profesionalId;
+
+	public SesionModel(Date fecha, String motivo, String diagnostico, String tratamiento, Float precio, Float descuento,
+			PacienteModel pacienteId, ProfesionalModel profesionalId) {
+		super();
+		this.fecha = fecha;
+		this.motivo = motivo;
+		this.diagnostico = diagnostico;
+		this.tratamiento = tratamiento;
+		this.precio = precio;
+		this.descuento = descuento;
+		this.pacienteId = pacienteId;
+		this.profesionalId = profesionalId;
+	}
 
 }

@@ -19,7 +19,9 @@ public class PacienteModel {
 	private String city;
 	private String number;
 
+	public PacienteModel() {
 
+	}
 
 	public PacienteModel(String name, String profesion, String email, Date birthdate, String city, String number) {
 		super();
