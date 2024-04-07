@@ -19,11 +19,11 @@ public class SesionModel {
 	private String tratamiento;
 	private Float precio;
 	private Float descuento;
+	private Float finalPrice;
 
-	
 //	Relaciones
 	@DBRef
-	private PacienteModel pacienteId ;
+	private PacienteModel pacienteId;
 	@DBRef
 	private ProfesionalModel profesionalId;
 
@@ -38,6 +38,7 @@ public class SesionModel {
 		this.descuento = descuento;
 		this.pacienteId = pacienteId;
 		this.profesionalId = profesionalId;
+		this.finalPrice = precio * (100 - descuento) / 100;
 	}
 
 }

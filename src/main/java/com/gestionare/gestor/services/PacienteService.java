@@ -33,4 +33,8 @@ public class PacienteService {
 		this.repositorio.save(modelo);
 	}
 
+	public void delete(String id) {
+		this.repositorio.deleteById(id);
+	}
+
 }

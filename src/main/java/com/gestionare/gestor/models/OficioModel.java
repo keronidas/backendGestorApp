@@ -11,6 +11,8 @@ public class OficioModel {
 	@Id
 	private String id;
 	private String name;
-	private Float minIncome;
-
+	
+	public OficioModel(String name) {
+		this.name=name;
+	}
 }

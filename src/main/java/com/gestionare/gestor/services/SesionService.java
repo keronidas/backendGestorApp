@@ -33,5 +33,8 @@ public class SesionService {
 	public void save(SesionModel modelo) {
 		this.repositorio.save(modelo);
 	}
+	public void delete(String id) {
+		this.repositorio.deleteById(id);
+	}
 
 }

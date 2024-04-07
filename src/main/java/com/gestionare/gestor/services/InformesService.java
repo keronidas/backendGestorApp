@@ -8,29 +8,31 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.gestionare.gestor.models.ProfesionalModel;
-import com.gestionare.gestor.repository.IProfesionalRepository;
+import com.gestionare.gestor.models.InformesModel;
+import com.gestionare.gestor.repository.IInformesRepository;
 
 @Service
 @Primary
-public class ProfesionalService {
-
+public class InformesService {
 	@Autowired
-	private IProfesionalRepository repositorio;
+	private IInformesRepository repositorio;
 	
-	public List<ProfesionalModel> getAll() {
+	public List<InformesModel> getAll() {
 		return this.repositorio.findAll(Sort.by("id").descending());
 	}
-	public ProfesionalModel findById(String id) {
-		Optional<ProfesionalModel> optional = this.repositorio.findById(id);
+
+	public InformesModel findById(String id) {
+		Optional<InformesModel> optional = this.repositorio.findById(id);
 		if (optional.isPresent()) {
 			return optional.get();
 		}
 		return null;
 	}
-	public void save(ProfesionalModel modelo) {
+
+	public void save(InformesModel modelo) {
 		this.repositorio.save(modelo);
 	}
+
 	public void delete(String id) {
 		this.repositorio.deleteById(id);
 	}
