@@ -23,21 +23,26 @@ public class SesionModel {
 
 //	Relaciones
 	@DBRef
-	private PacienteModel pacienteId;
+	private PacienteModel paciente;
 	@DBRef
-	private ProfesionalModel profesionalId;
-
+	private ProfesionalModel profesional;
+public SesionModel() {
+	
+}
 	public SesionModel(Date fecha, String motivo, String diagnostico, String tratamiento, Float precio, Float descuento,
-			PacienteModel pacienteId, ProfesionalModel profesionalId) {
+			PacienteModel paciente, ProfesionalModel profesional) {
 		super();
 		this.fecha = fecha;
 		this.motivo = motivo;
 		this.diagnostico = diagnostico;
 		this.tratamiento = tratamiento;
 		this.precio = precio;
+		if (descuento > 50) {
+			descuento = 50F;
+		}
 		this.descuento = descuento;
-		this.pacienteId = pacienteId;
-		this.profesionalId = profesionalId;
+		this.paciente = paciente;
+		this.profesional = profesional;
 		this.finalPrice = precio * (100 - descuento) / 100;
 	}
 

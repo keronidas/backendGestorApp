@@ -13,25 +13,26 @@ import lombok.Data;
 public class MaterialModel {
 	@Id
 	private String id;
+	private String code;
 	private String name;
 	private Float cost;
 	private String supplierName;
 	private Date buyDate;
 	private Integer quantity;
-	
+
 	public MaterialModel(String name, Float cost, String supplierName, Integer quantity) {
-		super();
+		this.code = java.util.UUID.randomUUID().toString();
 		this.name = name;
 		this.cost = cost;
 		this.supplierName = supplierName;
 		this.quantity = quantity;
-		this.buyDate=Date.from(Instant.now());
+		this.buyDate = Date.from(Instant.now());
 	}
-	
-	
-	
-	
-	
-	
+
+	public void moveMaterial(Integer quantity) {
+		
+			this.quantity += quantity;
+		
+	}
 
 }

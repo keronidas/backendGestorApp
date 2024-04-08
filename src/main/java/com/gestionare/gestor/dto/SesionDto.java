@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Data
 public class SesionDto {
-	
+	private String id;
 	private Date fecha;
 	private String motivo;
 	private String diagnostico;

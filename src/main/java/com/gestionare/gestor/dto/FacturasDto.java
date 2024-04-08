@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class FacturasDto {
 
-	private Float amount;
+
 	private Float discount;
 	private Boolean paid;
 	private List<SesionModel> sesiones;

@@ -20,14 +20,11 @@ public class InformesModel {
 	private Date date;
 	
 	@DBRef
-	private PacienteModel paciente;
-	@DBRef
 	private SesionModel sesion;
-	public InformesModel(String title, String description, PacienteModel paciente, SesionModel sesion) {
+	public InformesModel(String title, String description, SesionModel sesion) {
 		super();
 		this.title = title;
 		this.description = description;
-		this.paciente = paciente;
 		this.sesion = sesion;
 		this.date=Date.from(Instant.now())
 ;	}

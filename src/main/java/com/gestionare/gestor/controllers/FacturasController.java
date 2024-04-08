@@ -18,27 +18,44 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.gestionare.gestor.dto.ProfesionalDto;
-import com.gestionare.gestor.models.OficioModel;
-import com.gestionare.gestor.models.ProfesionalModel;
-import com.gestionare.gestor.services.ProfesionalService;
+import com.gestionare.gestor.dto.FacturasDto;
+import com.gestionare.gestor.models.FacturasModel;
+import com.gestionare.gestor.models.SesionModel;
+import com.gestionare.gestor.services.FacturasService;
+import com.gestionare.gestor.services.SesionService;
+
+//private String id;
+//private String code;
+//private Date date;
+//private Boolean paid;
+//private Float discount;
+//private Float amount;
+//private List<SesionModel> sesiones;
 
 @CrossOrigin(origins = "*")
 @Primary
 @RestController
 @RequestMapping("/api")
-public class ProfesionalController {
-	@Autowired
-	private ProfesionalService profesionalService;
+public class FacturasController {
 
-	@GetMapping("/profesionales")
+	@Autowired
+	private FacturasService facturasService;
+	@Autowired
+	private SesionService sesionService;
+
+	@GetMapping("/facturas")
 	public ResponseEntity<?> getAll() {
-		return ResponseEntity.status(HttpStatus.OK).body(this.profesionalService.getAll());
+		List<FacturasModel> datos = this.facturasService.getAll();
+		for (FacturasModel factura : datos) {
+			factura.calcularImporteTotal();
+			this.facturasService.save(factura);
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(datos);
 	}
 
-	@GetMapping("/profesionales/{id}")
+	@GetMapping("/facturas/{id}")
 	public ResponseEntity<?> getById(@PathVariable("id") String id) {
-		ProfesionalModel datos = this.profesionalService.findById(id);
+		FacturasModel datos = this.facturasService.findById(id);
 		if (datos == null) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashMap<String, String>() {
 				{
@@ -47,21 +64,26 @@ public class ProfesionalController {
 				}
 			});
 		} else {
-			return ResponseEntity.status(HttpStatus.OK).body(this.profesionalService.findById(id));
+			return ResponseEntity.status(HttpStatus.OK).body(this.facturasService.findById(id));
 		}
 
 	}
 
-	@PostMapping("/profesionales")
-	public ResponseEntity<?> createProfesional(@RequestBody ProfesionalDto dto) {
-		List<OficioModel> datosOficio = new ArrayList<OficioModel>();
-		for (OficioModel oficio : dto.getProfesion()) {
-			datosOficio.add(oficio);
+	@PostMapping("/facturas")
+	public ResponseEntity<?> createSesion(@RequestBody FacturasDto dto) {
+		List<SesionModel> datosSesion = new ArrayList<SesionModel>();
+		for (SesionModel sesion : dto.getSesiones()) {
+			datosSesion.add(sesion);
 		}
-		if (datosOficio.size() != 0) {
+		if (datosSesion.size() == 0) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashMap<String, String>() {
+				{
+					put("mensaje", "Sesiones no encontradas");
+				}
+			});
+		} else {
 			try {
-				this.profesionalService.save(new ProfesionalModel(dto.getName(), datosOficio, dto.getEmail(),
-						dto.getBirthdate(), dto.getCity(), dto.getAddress(), dto.getNumber(), dto.getSalary()));
+				this.facturasService.save(new FacturasModel(dto.getDiscount(), dto.getPaid(), datosSesion));
 				return ResponseEntity.status(HttpStatus.CREATED).body(new HashMap<String, String>() {
 					{
 
@@ -76,56 +98,44 @@ public class ProfesionalController {
 					}
 				});
 			}
-		} else {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashMap<String, String>() {
-				{
-
-					put("mensaje", "Un profesional tiene que tener al menos una profesion");
-				}
-			});
-
 		}
+
 	}
 
-	@SuppressWarnings("all")
-	@PutMapping("/profesionales/{id}")
-	public ResponseEntity<?> delete(@PathVariable("id") String id, @RequestBody ProfesionalDto dto) {
-		ProfesionalModel datosProfesional = this.profesionalService.findById(id);
-		List<OficioModel> datosOficio = new ArrayList<OficioModel>();
-		for (OficioModel oficio : dto.getProfesion()) {
-			datosOficio.add(oficio);
+	@PutMapping("/facturas/{id}")
+	public ResponseEntity<?> delete(@PathVariable("id") String id, @RequestBody FacturasDto dto) {
+		FacturasModel datos = this.facturasService.findById(id);
+		List<SesionModel> datosSesion = new ArrayList<SesionModel>();
+		for (SesionModel sesion : dto.getSesiones()) {
+			datosSesion.add(sesion);
 		}
-		if (datosOficio.size() != 0) {
-			datosProfesional.setAdress(dto.getAddress());
-			datosProfesional.setBirthdate(dto.getBirthdate());
-			datosProfesional.setCity(dto.getCity());
-			datosProfesional.setEmail(dto.getEmail());
-			datosProfesional.setName(dto.getName());
-			datosProfesional.setNumber(dto.getNumber());
-			datosProfesional.setSalary(dto.getSalary());
-			this.profesionalService.save(datosProfesional);
+		if (datosSesion.size() != 0) {
+			datos.setDiscount(dto.getDiscount());
+			datos.setPaid(dto.getPaid());
+			datos.setSesiones(datosSesion);
+			this.facturasService.save(datos);
 			return ResponseEntity.status(HttpStatus.CREATED).body(new HashMap<String, String>() {
 				{
 
 					put("mensaje", "Editado con exito");
 				}
 			});
-
+			
 		} else {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashMap<String, String>() {
 				{
 
-					put("mensaje", "Un profesional tiene que tener al menos una profesion");
+					put("mensaje", "No se han incluido sesiones en la factura");
 				}
 			});
 		}
 	}
 
-	@DeleteMapping("/profesionales/{id}")
+	@DeleteMapping("/facturas/{id}")
 	public ResponseEntity<?> delete(@PathVariable("id") String id) {
-		ProfesionalModel datos = this.profesionalService.findById(id);
+		FacturasModel datos = this.facturasService.findById(id);
 		if (datos != null) {
-			this.profesionalService.delete(id);
+			this.facturasService.delete(id);
 			return ResponseEntity.status(HttpStatus.CREATED).body(new HashMap<String, String>() {
 				{
 
@@ -141,4 +151,5 @@ public class ProfesionalController {
 			});
 		}
 	}
+
 }

@@ -6,13 +6,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.Data;
 
 @Data
-@Document(value="oficios")
+@Document(value = "oficios")
 public class OficioModel {
 	@Id
 	private String id;
 	private String name;
+
+	public OficioModel() {
+		
+	}
 	
 	public OficioModel(String name) {
-		this.name=name;
+		this.name = name;
 	}
 }
