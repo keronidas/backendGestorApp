@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gestionare.gestor.dto.FacturasDto;
+import com.gestionare.gestor.dto.MaterialDto;
 import com.gestionare.gestor.models.FacturasModel;
 import com.gestionare.gestor.models.MaterialModel;
 import com.gestionare.gestor.models.SesionModel;
@@ -34,7 +35,7 @@ public class MaterialController {
 
 	@GetMapping("/material")
 	public ResponseEntity<?> getAll() {
-		List<MaterialModel> datos = this.materialService.getAll();	
+		List<MaterialModel> datos = this.materialService.getAll();
 		return ResponseEntity.status(HttpStatus.OK).body(datos);
 	}
 
@@ -54,38 +55,39 @@ public class MaterialController {
 
 	}
 
-//	@PostMapping("/material")
-//	public ResponseEntity<?> createSesion(@RequestBody FacturasDto dto) {
-//		List<SesionModel> datosSesion = new ArrayList<SesionModel>();
-//		for (SesionModel sesion : dto.getSesiones()) {
-//			datosSesion.add(sesion);
-//		}
-//		if (datosSesion.size() == 0) {
-//			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashMap<String, String>() {
-//				{
-//					put("mensaje", "Sesiones no encontradas");
-//				}
-//			});
-//		} else {
-//			try {
-//				this.materialService.save(new FacturasModel(dto.getDiscount(), dto.getPaid(), datosSesion));
-//				return ResponseEntity.status(HttpStatus.CREATED).body(new HashMap<String, String>() {
-//					{
-//
-//						put("mensaje", "Creado con exito");
-//					}
-//				});
-//			} catch (Exception e) {
-//				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashMap<String, String>() {
-//					{
-//
-//						put("mensaje", "Ocurrio error");
-//					}
-//				});
-//			}
-//		}
-//
-//	}
+	@PostMapping("/material")
+	public ResponseEntity<?> createSesion(@RequestBody MaterialDto dto) {
+		List<MaterialModel> datos = this.materialService.getAll();
+		for (MaterialModel item : datos) {
+			if (item.getCode() == dto.getCode()) {
+				item.moveMaterial(dto.getQuantity());
+				return ResponseEntity.status(HttpStatus.CREATED).body(new HashMap<String, String>() {
+					{
+
+						put("mensaje", "Agregado");
+					}
+				});
+			}
+		}
+		try {
+			this.materialService
+					.save(new MaterialModel(dto.getName(), dto.getCost(), dto.getSupplierName(), dto.getQuantity()));
+			return ResponseEntity.status(HttpStatus.CREATED).body(new HashMap<String, String>() {
+				{
+
+					put("mensaje", "Creado con exito");
+				}
+			});
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashMap<String, String>() {
+				{
+
+					put("mensaje", "Ocurrio error");
+				}
+			});
+		}
+
+	}
 //
 //	@PutMapping("/facturas/{id}")
 //	public ResponseEntity<?> delete(@PathVariable("id") String id, @RequestBody FacturasDto dto) {
