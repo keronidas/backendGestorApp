@@ -14,14 +14,13 @@ public class SalaTratamientoModel {
 	private String name;
 	private String description;
 	
-	@DBRef
-	private SesionModel sesion;
 
-	public SalaTratamientoModel(String name, String description, SesionModel sesion) {
+
+	public SalaTratamientoModel(String name, String description) {
 		super();
 		this.name = name;
 		this.description = description;
-		this.sesion = sesion;
+
 	}
 	
 	

@@ -22,10 +22,12 @@ import com.gestionare.gestor.dto.SesionDto;
 import com.gestionare.gestor.models.FacturasModel;
 import com.gestionare.gestor.models.PacienteModel;
 import com.gestionare.gestor.models.ProfesionalModel;
+import com.gestionare.gestor.models.SalaTratamientoModel;
 import com.gestionare.gestor.models.SesionModel;
 import com.gestionare.gestor.services.FacturasService;
 import com.gestionare.gestor.services.PacienteService;
 import com.gestionare.gestor.services.ProfesionalService;
+import com.gestionare.gestor.services.SalaTratamientoService;
 import com.gestionare.gestor.services.SesionService;
 
 @CrossOrigin(origins = "*")
@@ -42,6 +44,8 @@ public class SesionController {
 	private SesionService sesionService;
 	@Autowired
 	private FacturasService facturasService;
+	@Autowired
+	private SalaTratamientoService salaService;
 
 	@GetMapping("/sesiones")
 	public ResponseEntity<?> getAll() {
@@ -69,6 +73,7 @@ public class SesionController {
 
 		ProfesionalModel datosProfesional = this.profesionalService.findById(dto.getProfesional().getId());
 		PacienteModel datosPaciente = this.pacienteService.findById(dto.getPaciente().getId());
+		SalaTratamientoModel datosSala= this.salaService.findById(dto.getSalaTratamiento().getId());
 		if (datosProfesional == null || datosPaciente == null) {
 			if (datosProfesional == null) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashMap<String, String>() {
@@ -88,7 +93,7 @@ public class SesionController {
 		} else {
 			try {
 				this.sesionService.save(new SesionModel(dto.getFecha(), dto.getMotivo(), dto.getDiagnostico(),
-						dto.getTratamiento(), dto.getPrecio(), dto.getDescuento(), datosPaciente, datosProfesional));
+						dto.getTratamiento(), dto.getPrecio(), dto.getDescuento(), datosPaciente, datosProfesional,datosSala));
 				return ResponseEntity.status(HttpStatus.CREATED).body(new HashMap<String, String>() {
 					{
 

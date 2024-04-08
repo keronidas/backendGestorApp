@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.gestionare.gestor.models.PacienteModel;
 import com.gestionare.gestor.models.ProfesionalModel;
+import com.gestionare.gestor.models.SalaTratamientoModel;
 
 import lombok.Data;
 
@@ -18,4 +19,5 @@ public class SesionDto {
 	private Float descuento;
 	private PacienteModel paciente;
 	private ProfesionalModel profesional;
+	private SalaTratamientoModel salaTratamiento;
 }

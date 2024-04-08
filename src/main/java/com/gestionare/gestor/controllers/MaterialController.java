@@ -22,6 +22,7 @@ import com.gestionare.gestor.dto.FacturasDto;
 import com.gestionare.gestor.dto.MaterialDto;
 import com.gestionare.gestor.models.FacturasModel;
 import com.gestionare.gestor.models.MaterialModel;
+import com.gestionare.gestor.models.OficioModel;
 import com.gestionare.gestor.models.SesionModel;
 import com.gestionare.gestor.services.MaterialService;
 
@@ -55,30 +56,64 @@ public class MaterialController {
 
 	}
 
-	@PostMapping("/material")
-	public ResponseEntity<?> createSesion(@RequestBody MaterialDto dto) {
-		List<MaterialModel> datos = this.materialService.getAll();
-		for (MaterialModel item : datos) {
-			if (item.getCode() == dto.getCode()) {
-				item.moveMaterial(dto.getQuantity());
-				return ResponseEntity.status(HttpStatus.CREATED).body(new HashMap<String, String>() {
-					{
-
-						put("mensaje", "Agregado");
-					}
-				});
-			}
-		}
+	@PostMapping("/crear-material")
+	public ResponseEntity<?> createMaterial(@RequestBody MaterialDto dto) {
 		try {
-			this.materialService
-					.save(new MaterialModel(dto.getName(), dto.getCost(), dto.getSupplierName(), dto.getQuantity()));
+			this.materialService.save(new MaterialModel(dto.getName(), dto.getSaleCost(), dto.getSupplierName()));
 			return ResponseEntity.status(HttpStatus.CREATED).body(new HashMap<String, String>() {
 				{
-
 					put("mensaje", "Creado con exito");
 				}
 			});
 		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashMap<String, String>() {
+				{
+					put("mensaje", "Ocurrió un error, compruebe que el producto no este creado");
+				}
+			});
+		}
+
+	}
+
+	@PutMapping("/stock-material")
+	public ResponseEntity<?> updateStockMaterial(@RequestBody MaterialDto dto) {
+		MaterialModel dato = this.materialService.findById(dto.getId());
+		dato.moveMaterial(dto.getQuantity());
+		this.materialService.save(dato);
+		return ResponseEntity.status(HttpStatus.CREATED).body(new HashMap<String, String>() {
+			{
+				put("mensaje", "Stock agregado con exito");
+			}
+		});
+
+	}
+
+	@PutMapping("/material/{id}")
+	public ResponseEntity<?> updateMaterial(@RequestBody MaterialDto dto) {
+		MaterialModel dato = this.materialService.findById(dto.getId());
+		dato.setName(dto.getName());
+		dato.setCost(dto.getSaleCost());
+		dato.setSupplierName(dto.getSupplierName());
+		this.materialService.save(dato);
+		return ResponseEntity.status(HttpStatus.CREATED).body(new HashMap<String, String>() {
+			{
+				put("mensaje", "Editado con exito");
+			}
+		});
+	}
+
+	@DeleteMapping("/material/{id}")
+	public ResponseEntity<?> delete(@PathVariable("id") String id) {
+		MaterialModel datos = this.materialService.findById(id);
+		if (datos != null) {
+			this.materialService.delete(id);
+			return ResponseEntity.status(HttpStatus.CREATED).body(new HashMap<String, String>() {
+				{
+
+					put("mensaje", "Eliminado con exito");
+				}
+			});
+		} else {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashMap<String, String>() {
 				{
 
@@ -86,57 +121,6 @@ public class MaterialController {
 				}
 			});
 		}
-
 	}
-//
-//	@PutMapping("/facturas/{id}")
-//	public ResponseEntity<?> delete(@PathVariable("id") String id, @RequestBody FacturasDto dto) {
-//		FacturasModel datos = this.facturasService.findById(id);
-//		List<SesionModel> datosSesion = new ArrayList<SesionModel>();
-//		for (SesionModel sesion : dto.getSesiones()) {
-//			datosSesion.add(sesion);
-//		}
-//		if (datosSesion.size() != 0) {
-//			datos.setDiscount(dto.getDiscount());
-//			datos.setPaid(dto.getPaid());
-//			datos.setSesiones(datosSesion);
-//			this.facturasService.save(datos);
-//			return ResponseEntity.status(HttpStatus.CREATED).body(new HashMap<String, String>() {
-//				{
-//
-//					put("mensaje", "Editado con exito");
-//				}
-//			});
-//			
-//		} else {
-//			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashMap<String, String>() {
-//				{
-//
-//					put("mensaje", "No se han incluido sesiones en la factura");
-//				}
-//			});
-//		}
-//	}
-//
-//	@DeleteMapping("/facturas/{id}")
-//	public ResponseEntity<?> delete(@PathVariable("id") String id) {
-//		FacturasModel datos = this.facturasService.findById(id);
-//		if (datos != null) {
-//			this.facturasService.delete(id);
-//			return ResponseEntity.status(HttpStatus.CREATED).body(new HashMap<String, String>() {
-//				{
-//
-//					put("mensaje", "Eliminado con exito");
-//				}
-//			});
-//		} else {
-//			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashMap<String, String>() {
-//				{
-//
-//					put("mensaje", "Ocurrio error");
-//				}
-//			});
-//		}
-//	}
 
 }

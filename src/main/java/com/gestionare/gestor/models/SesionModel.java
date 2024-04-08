@@ -6,6 +6,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.gestionare.gestor.services.SalaTratamientoService;
+
 import lombok.Data;
 
 @Data
@@ -26,11 +28,15 @@ public class SesionModel {
 	private PacienteModel paciente;
 	@DBRef
 	private ProfesionalModel profesional;
-public SesionModel() {
-	
-}
+	@DBRef
+	private SalaTratamientoModel salas;
+
+	public SesionModel() {
+
+	}
+
 	public SesionModel(Date fecha, String motivo, String diagnostico, String tratamiento, Float precio, Float descuento,
-			PacienteModel paciente, ProfesionalModel profesional) {
+			PacienteModel paciente, ProfesionalModel profesional, SalaTratamientoModel sala) {
 		super();
 		this.fecha = fecha;
 		this.motivo = motivo;
@@ -43,6 +49,7 @@ public SesionModel() {
 		this.descuento = descuento;
 		this.paciente = paciente;
 		this.profesional = profesional;
+		this.salas=sala;
 		this.finalPrice = precio * (100 - descuento) / 100;
 	}
 
