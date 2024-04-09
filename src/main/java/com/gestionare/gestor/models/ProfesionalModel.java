@@ -23,13 +23,12 @@ public class ProfesionalModel {
 	private String adress;
 	private String number;
 	private Float salary;
-	private String fotografia;
 	private Date creation_date;
+	
+	private String fotografia;
 	
 	@DBRef
 	private List<OficioModel> profesion;
-
-
 
 	public ProfesionalModel(String name, List<OficioModel> profesion, String email, Date birthdate, String city,
 			String adress, String number, Float salary) {

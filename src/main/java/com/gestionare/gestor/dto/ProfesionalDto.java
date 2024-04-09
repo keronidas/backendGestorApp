@@ -18,4 +18,5 @@ public class ProfesionalDto {
 	private String city;
 	private String number;
 	private Float salary;
+	private String foto;
 }

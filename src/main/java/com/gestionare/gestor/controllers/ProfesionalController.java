@@ -1,8 +1,13 @@
 package com.gestionare.gestor.controllers;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -16,10 +21,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.gestionare.gestor.dto.ProfesionalDto;
 import com.gestionare.gestor.models.OficioModel;
+import com.gestionare.gestor.models.PacienteModel;
 import com.gestionare.gestor.models.ProfesionalModel;
 import com.gestionare.gestor.services.ProfesionalService;
 
@@ -125,6 +133,13 @@ public class ProfesionalController {
 	public ResponseEntity<?> delete(@PathVariable("id") String id) {
 		ProfesionalModel datos = this.profesionalService.findById(id);
 		if (datos != null) {
+			if (datos.getFotografia() != null && datos.getFotografia().length() > 0) {
+				if (Paths.get("uploads").resolve(datos.getFotografia()).toAbsolutePath().toFile().exists()
+						&& Paths.get("uploads").resolve(datos.getFotografia()).toAbsolutePath().toFile().canRead()) {
+					Paths.get("uploads").resolve(datos.getFotografia()).toAbsolutePath().toFile().delete();
+				}
+
+			}
 			this.profesionalService.delete(id);
 			return ResponseEntity.status(HttpStatus.CREATED).body(new HashMap<String, String>() {
 				{
@@ -140,5 +155,45 @@ public class ProfesionalController {
 				}
 			});
 		}
+	}
+
+	@PostMapping("/prfesionales/upload")
+	public ResponseEntity<?> upload(@RequestParam("archivo") MultipartFile archivo, @RequestParam("id") String id) {
+		ProfesionalModel profesional = profesionalService.findById(id);
+		if (!archivo.isEmpty()) {
+			String nombreArchivo = UUID.randomUUID().toString() + "_" + archivo.getOriginalFilename().replace(" ", "");
+			Path rutaArchivo = Paths.get("uploads").resolve(nombreArchivo).toAbsolutePath();
+			try {
+				Files.copy(archivo.getInputStream(), rutaArchivo);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (profesional.getFotografia() != null && profesional.getFotografia().length() > 0) {
+				if (Paths.get("uploads").resolve(profesional.getFotografia()).toAbsolutePath().toFile().exists()
+						&& Paths.get("uploads").resolve(profesional.getFotografia()).toAbsolutePath().toFile()
+								.canRead()) {
+					Paths.get("uploads").resolve(profesional.getFotografia()).toAbsolutePath().toFile().delete();
+				}
+
+			}
+			profesional.setFotografia(nombreArchivo);
+			this.profesionalService.save(profesional);
+
+			return ResponseEntity.status(HttpStatus.CREATED).body(new HashMap<String, String>() {
+				{
+
+					put("mensaje", "Borrado con exito");
+				}
+			});
+		} else {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashMap<String, String>() {
+				{
+
+					put("mensaje", "Borrado con exito");
+				}
+			});
+		}
+
 	}
 }

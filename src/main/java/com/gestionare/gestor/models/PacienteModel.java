@@ -3,6 +3,7 @@ package com.gestionare.gestor.models;
 import java.util.Date;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
@@ -18,6 +19,7 @@ public class PacienteModel {
 	private Date birthdate;
 	private String city;
 	private String number;
+	private String img;
 
 	public PacienteModel() {
 

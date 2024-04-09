@@ -13,4 +13,5 @@ public class PacienteDto {
 	private Date birthdate;
 	private String city;
 	private String number;
+	private String foto;
 }
