@@ -133,10 +133,10 @@ public class ProfesionalController {
 	public ResponseEntity<?> delete(@PathVariable("id") String id) {
 		ProfesionalModel datos = this.profesionalService.findById(id);
 		if (datos != null) {
-			if (datos.getFotografia() != null && datos.getFotografia().length() > 0) {
-				if (Paths.get("uploads").resolve(datos.getFotografia()).toAbsolutePath().toFile().exists()
-						&& Paths.get("uploads").resolve(datos.getFotografia()).toAbsolutePath().toFile().canRead()) {
-					Paths.get("uploads").resolve(datos.getFotografia()).toAbsolutePath().toFile().delete();
+			if (datos.getImg() != null && datos.getImg().length() > 0) {
+				if (Paths.get("uploads").resolve(datos.getImg()).toAbsolutePath().toFile().exists()
+						&& Paths.get("uploads").resolve(datos.getImg()).toAbsolutePath().toFile().canRead()) {
+					Paths.get("uploads").resolve(datos.getImg()).toAbsolutePath().toFile().delete();
 				}
 
 			}
@@ -169,15 +169,15 @@ public class ProfesionalController {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			if (profesional.getFotografia() != null && profesional.getFotografia().length() > 0) {
-				if (Paths.get("uploads").resolve(profesional.getFotografia()).toAbsolutePath().toFile().exists()
-						&& Paths.get("uploads").resolve(profesional.getFotografia()).toAbsolutePath().toFile()
+			if (profesional.getImg() != null && profesional.getImg().length() > 0) {
+				if (Paths.get("uploads").resolve(profesional.getImg()).toAbsolutePath().toFile().exists()
+						&& Paths.get("uploads").resolve(profesional.getImg()).toAbsolutePath().toFile()
 								.canRead()) {
-					Paths.get("uploads").resolve(profesional.getFotografia()).toAbsolutePath().toFile().delete();
+					Paths.get("uploads").resolve(profesional.getImg()).toAbsolutePath().toFile().delete();
 				}
 
 			}
-			profesional.setFotografia(nombreArchivo);
+			profesional.setImg(nombreArchivo);
 			this.profesionalService.save(profesional);
 
 			return ResponseEntity.status(HttpStatus.CREATED).body(new HashMap<String, String>() {
