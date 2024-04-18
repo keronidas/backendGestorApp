@@ -16,6 +16,7 @@ public class SesionDto {
 	private String diagnostico;
 	private String tratamiento;
 	private Float precio;
+	private Float finalPrice;
 	private Float descuento;
 	private PacienteModel paciente;
 	private ProfesionalModel profesional;

@@ -25,7 +25,7 @@ public class ProfesionalModel {
 	private Float salary;
 	private Date creation_date;
 	
-	private String fotografia;
+	private String img;
 	
 	@DBRef
 	private List<OficioModel> profesion;

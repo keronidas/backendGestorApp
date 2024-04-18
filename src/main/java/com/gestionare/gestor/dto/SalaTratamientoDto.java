@@ -1,6 +1,6 @@
 package com.gestionare.gestor.dto;
 
-import com.gestionare.gestor.models.SesionModel;
+
 
 import lombok.Data;
 
@@ -8,4 +8,5 @@ import lombok.Data;
 public class SalaTratamientoDto {
 	private String name;
 	private String description;
+	private String img;
 }
