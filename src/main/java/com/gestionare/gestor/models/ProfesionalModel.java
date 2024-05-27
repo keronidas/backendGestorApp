@@ -24,13 +24,11 @@ public class ProfesionalModel {
 	private String number;
 	private Float salary;
 	private Date creation_date;
-	
-	private String img;
-	
-	@DBRef
-	private List<OficioModel> profesion;
 
-	public ProfesionalModel(String name, List<OficioModel> profesion, String email, Date birthdate, String city,
+	
+	private  String profesion;
+
+	public ProfesionalModel(String name, String profesion, String email, Date birthdate, String city,
 			String adress, String number, Float salary) {
 		this.name = name;
 		this.profesion = profesion;

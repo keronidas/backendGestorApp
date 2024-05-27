@@ -17,10 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.gestionare.gestor.dto.FacturasDto;
 import com.gestionare.gestor.dto.InformesDto;
 import com.gestionare.gestor.models.InformesModel;
-import com.gestionare.gestor.models.OficioModel;
 import com.gestionare.gestor.models.SesionModel;
 import com.gestionare.gestor.services.InformesService;
 import com.gestionare.gestor.services.SesionService;

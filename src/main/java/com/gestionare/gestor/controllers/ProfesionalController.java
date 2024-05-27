@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.gestionare.gestor.dto.ProfesionalDto;
-import com.gestionare.gestor.models.OficioModel;
 import com.gestionare.gestor.models.PacienteModel;
 import com.gestionare.gestor.models.ProfesionalModel;
 import com.gestionare.gestor.services.ProfesionalService;
@@ -62,13 +61,9 @@ public class ProfesionalController {
 
 	@PostMapping("/profesionales")
 	public ResponseEntity<?> createProfesional(@RequestBody ProfesionalDto dto) {
-		List<OficioModel> datosOficio = new ArrayList<OficioModel>();
-		for (OficioModel oficio : dto.getProfesion()) {
-			datosOficio.add(oficio);
-		}
-		if (datosOficio.size() != 0) {
+	
 			try {
-				this.profesionalService.save(new ProfesionalModel(dto.getName(), datosOficio, dto.getEmail(),
+				this.profesionalService.save(new ProfesionalModel(dto.getName(), dto.getProfesion(), dto.getEmail(),
 						dto.getBirthdate(), dto.getCity(), dto.getAddress(), dto.getNumber(), dto.getSalary()));
 				return ResponseEntity.status(HttpStatus.CREATED).body(new HashMap<String, String>() {
 					{
@@ -80,30 +75,19 @@ public class ProfesionalController {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashMap<String, String>() {
 					{
 
-						put("mensaje", "Ocurrio error");
+						put("mensaje", "Ocurrio error" + e.getMessage());
 					}
 				});
 			}
-		} else {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashMap<String, String>() {
-				{
-
-					put("mensaje", "Un profesional tiene que tener al menos una profesion");
-				}
-			});
-
-		}
+		
 	}
 
 	@SuppressWarnings("all")
 	@PutMapping("/profesionales/{id}")
 	public ResponseEntity<?> delete(@PathVariable("id") String id, @RequestBody ProfesionalDto dto) {
 		ProfesionalModel datosProfesional = this.profesionalService.findById(id);
-		List<OficioModel> datosOficio = new ArrayList<OficioModel>();
-		for (OficioModel oficio : dto.getProfesion()) {
-			datosOficio.add(oficio);
-		}
-		if (datosOficio.size() != 0) {
+		
+		if (datosProfesional != null) {
 			datosProfesional.setAdress(dto.getAddress());
 			datosProfesional.setBirthdate(dto.getBirthdate());
 			datosProfesional.setCity(dto.getCity());
@@ -133,13 +117,7 @@ public class ProfesionalController {
 	public ResponseEntity<?> delete(@PathVariable("id") String id) {
 		ProfesionalModel datos = this.profesionalService.findById(id);
 		if (datos != null) {
-			if (datos.getImg() != null && datos.getImg().length() > 0) {
-				if (Paths.get("uploads").resolve(datos.getImg()).toAbsolutePath().toFile().exists()
-						&& Paths.get("uploads").resolve(datos.getImg()).toAbsolutePath().toFile().canRead()) {
-					Paths.get("uploads").resolve(datos.getImg()).toAbsolutePath().toFile().delete();
-				}
-
-			}
+			
 			this.profesionalService.delete(id);
 			return ResponseEntity.status(HttpStatus.CREATED).body(new HashMap<String, String>() {
 				{
@@ -157,43 +135,5 @@ public class ProfesionalController {
 		}
 	}
 
-	@PostMapping("/prfesionales/upload")
-	public ResponseEntity<?> upload(@RequestParam("archivo") MultipartFile archivo, @RequestParam("id") String id) {
-		ProfesionalModel profesional = profesionalService.findById(id);
-		if (!archivo.isEmpty()) {
-			String nombreArchivo = UUID.randomUUID().toString() + "_" + archivo.getOriginalFilename().replace(" ", "");
-			Path rutaArchivo = Paths.get("uploads").resolve(nombreArchivo).toAbsolutePath();
-			try {
-				Files.copy(archivo.getInputStream(), rutaArchivo);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			if (profesional.getImg() != null && profesional.getImg().length() > 0) {
-				if (Paths.get("uploads").resolve(profesional.getImg()).toAbsolutePath().toFile().exists()
-						&& Paths.get("uploads").resolve(profesional.getImg()).toAbsolutePath().toFile()
-								.canRead()) {
-					Paths.get("uploads").resolve(profesional.getImg()).toAbsolutePath().toFile().delete();
-				}
 
-			}
-			profesional.setImg(nombreArchivo);
-			this.profesionalService.save(profesional);
-
-			return ResponseEntity.status(HttpStatus.CREATED).body(new HashMap<String, String>() {
-				{
-
-					put("mensaje", "Borrado con exito");
-				}
-			});
-		} else {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new HashMap<String, String>() {
-				{
-
-					put("mensaje", "Borrado con exito");
-				}
-			});
-		}
-
-	}
 }
